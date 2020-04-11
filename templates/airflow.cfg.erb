@@ -1,0 +1,7 @@
+<% @config.each do |section, params| -%>
+[<%= section %>]
+<% params.each do |param, val| -%>
+<%= param %> = <%= val %>
+<% end %>
+
+<% end %>

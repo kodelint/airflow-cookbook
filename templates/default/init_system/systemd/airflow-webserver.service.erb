@@ -1,0 +1,13 @@
+[Unit]
+Description=Airflow webserver daemon
+After=network.target
+
+[Service]
+EnvironmentFile=<%= @env_path %>
+User=<%= @user %>
+Group=<%= @group %>
+ExecStart=<%= @bin_path %>/airflow webserver --pid <%= @run_path %>/airflow-webserver.pid
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

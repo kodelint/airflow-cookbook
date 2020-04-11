@@ -1,0 +1,31 @@
+---
+driver:
+  name: vagrant
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-18.04
+  # - name: centos-7
+
+suites:
+  - name: airflow-cookbook
+    provisioner:
+      name: chef_zero
+      log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
+      product_name: chef
+      product_version: 14.14
+    driver:
+      network:
+        - ["forwarded_port", {guest: 8080, host: 8080}]
+    run_list:
+      - recipe[airflow-cookbook::default]
+      - recipe[airflow-cookbook::web]
+      - recipe[airflow-cookbook::scheduler]
+      - recipe[airflow-cookbook::workers]
+      - recipe[airflow-cookbook::post_setup]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
