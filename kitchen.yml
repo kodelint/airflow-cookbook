@@ -17,10 +17,8 @@ suites:
     provisioner:
       name: chef_zero
       log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
-      # product_name: <%= ENV['PRODUCT_NAME'] || "auto" %>
-      # product_version: <%= ENV['CHEF_CLIENT_VERSION'] || "auto" %>
-      product_name: chef 
-      product_version: 14.14 
+      product_name: <%= ENV['PRODUCT_NAME'] || "chef" %>
+      product_version: <%= ENV['CHEF_CLIENT_VERSION'] || "latest" %>
     driver:
       network:
         - ["forwarded_port", {guest: 8080, host: 8080}]
