@@ -28,7 +28,6 @@ All to view or change attributes and packages are here:
 | [scheduler.rb](recipes/scheduler.rb) | Configures `airflow scheduler` and creates `systemd` or `upstart` services based on platofrom|
 | [workers.rb](recipes/workers.rb) | Configures `airflow workers` and creates `systemd` or `upstart` services based on platofrom|
 | [flower.rb](recipes/flower.rb) | Configures `flower` for monitoring `celery` on `airflow scheduler` and creates `systemd` or `upstart` services based on platofrom|
-| [centos-config.rb](recipes/centos-config.rb) | Installs required `OS Packages` for `CentOS 7`|
 
 #### Testing using `kitchen`
 ```
