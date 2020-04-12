@@ -5,6 +5,19 @@
 # Copyright:: 2020, Satyajit, All Rights Reserved.
 
 ################################
+#  For CentOS 7 and Python3.6  #
+################################
+
+yum_repository 'ius' do
+  baseurl 'https://repo.ius.io/7/$basearch'
+  description 'IUS Community Packages for Enterprise Linux 7 - $basearch'
+  enabled true
+  gpgcheck true
+  gpgkey 'https://repo.ius.io/RPM-GPG-KEY-IUS-7'
+  only_if { platform?('centos') && node['platform_version'].to_i == 7 }
+end
+
+################################
 # Create Airflow user and Group#
 ################################
 
