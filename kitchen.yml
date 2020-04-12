@@ -7,15 +7,18 @@ verifier:
 
 platforms:
   - name: ubuntu-18.04
-  # - name: centos-7
+  - name: centos-7
 
 suites:
+  ########################################
+  #        Locally using Vagraent        #
+  ########################################
   - name: airflow-cookbook
     provisioner:
       name: chef_zero
       log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
-      product_name: chef
-      product_version: 14.14
+      product_name: <%= ENV['PRODUCT_NAME'] || "auto" %>
+      product_version: <%= ENV['CHEF_CLIENT_VERSION'] || "auto" %>
     driver:
       network:
         - ["forwarded_port", {guest: 8080, host: 8080}]
@@ -29,3 +32,71 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
+
+  ########################################
+  #      AWS EC2 using kitchen-ec2       #
+  ########################################
+  - name: airflow-cookbook-centos-ec2
+    driver:
+      name: ec2
+      image_id: <%= ENV['CLOUDOPS_CENTOS_7_IMAGE'] %>
+      associate_public_ip: true
+      instance_type: <%= ENV['INSTANCE_TYPE'] %>
+      security_group_ids:
+        - <%= ENV['AWS_SECURITY_GROUP_1'] %>
+        - <%= ENV['AWS_SECURITY_GROUP_2'] %>
+      subnet_id: <%= ENV['AWS_SUBNET'] %>
+      vpc_id: <%= ENV['AWS_VPC_ID'] %>
+    transport:
+      # ssh_key: some_key # if not defined kitchen will create one and delete automatically
+      connection_timeout: 10
+      connection_retries: 5
+      username: centos
+    provisioner:
+      name: chef_zero
+      log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
+    run_list:
+      - recipe[airflow-cookbook::default]
+      - recipe[airflow-cookbook::web]
+      - recipe[airflow-cookbook::scheduler]
+      - recipe[airflow-cookbook::workers]
+      - recipe[airflow-cookbook::post_setup]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+    excludes:
+      - ubuntu-18.04
+
+  - name: airflow-cookbook-ubuntu-ec2
+    driver:
+      name: ec2
+      image_id: <%= ENV['IMAGE_ID'] %>
+      associate_public_ip: true
+      instance_type: <%= ENV['INSTANCE_TYPE'] %>
+      security_group_ids:
+        - <%= ENV['AWS_SECURITY_GROUP_1'] %>
+        - <%= ENV['AWS_SECURITY_GROUP_2'] %>
+      subnet_id: <%= ENV['AWS_SUBNET'] %>
+      vpc_id: <%= ENV['AWS_VPC_ID'] %>
+    transport:
+      # ssh_key: some_key # if not defined kitchen will create one and delete automatically
+      connection_timeout: 10
+      connection_retries: 5
+      username: ubuntu
+    provisioner:
+      name: chef_zero
+      log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
+    run_list:
+      - recipe[airflow-cookbook::default]
+      - recipe[airflow-cookbook::web]
+      - recipe[airflow-cookbook::scheduler]
+      - recipe[airflow-cookbook::workers]
+      - recipe[airflow-cookbook::post_setup]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+    excludes:
+      - centos-7
+

@@ -3,15 +3,21 @@
 Installs and configures Airflow workflow management platform. More information about **Airflow** can be found here: [airflow](https://github.com/airbnb/airflow)
 
 #### Supported Platforms
-Ubuntu (Tested on 18.04).
-CentOS (Tested on 7)
+- Ubuntu (Tested on 18.04).
+- CentOS (Tested on 7)
+
+#### Testing
+- Local testing using `kitchen-ci` and `vagrant`
+- Testing on AWS EC2 `kitchen-ci` look at [kitchen.yml](./kitchen.yml)
 
 #### Attributes
 All to view or change attributes and packages are here:
+
 |Settings  |  File name|
 |--|--|
 | attributes | [default.rb](./attributes/default.rb) |
 | packages | [pkgs.rb](./attributes/pkgs.rb) |
+| commands | [commands.rb](./attributes/commands.rb) |
 
 #### Recipes
 |Recipe Name| What it does  |

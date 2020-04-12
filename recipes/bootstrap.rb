@@ -57,15 +57,6 @@ execute "install airflow" do
   not_if "python3.6 -m pip show apache-airflow==#{node["airflow"]["version"]}"
 end
 
-# Run upgradedb or initdb
-# Answer: Actually any
-# https://medium.com/datareply/airflow-lesser-known-tips-tricks-and-best-practises-cf4d4a90f8f
-
-execute "run upgradedb" do
-    command node["airflow"]["bootstrap"]["cmd"]
-    action :run
-end
-
 ########################################
 #      Required folder structure       #
 ########################################
@@ -137,5 +128,27 @@ template "airflow_services_env" do
     :is_upstart => node["airflow"]["is_upstart"],
     :config => node["airflow"]["config"]
   })
+end
+
+########################################
+#      Create required Tables          #
+########################################
+# Run upgradedb or initdb
+# Answer: Actually any
+# https://medium.com/datareply/airflow-lesser-known-tips-tricks-and-best-practises-cf4d4a90f8f
+
+execute "run upgradedb" do
+    command "cd #{node["airflow"]["user_home_directory"]}; su - #{node["airflow"]["user"]} -c '/usr/local/bin/airflow upgradedb'"
+    action :run
+end
+
+########################################
+#          Create Connections          #
+########################################
+
+node["airflow"]["bootstrap"]["connections"].each do |connection, connection_type|
+  execute 'create connection' do
+    command "su - #{node["airflow"]["user"]} -c '/usr/local/bin/airflow connections --add --conn_id #{connection} --conn_type #{connection_type} --conn_extra {}'"
+  end
 end
 

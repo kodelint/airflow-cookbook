@@ -7,7 +7,6 @@ default["airflow"]["user_uid"] = 9999
 default["airflow"]["group_gid"] = 9999
 default["airflow"]["user_home_directory"] = "/home/#{node["airflow"]["user"]}"
 default["airflow"]["shell"] = "/bin/bash"
-default["airflow"]["bootstrap"]["cmd"] = "cd #{node["airflow"]["user_home_directory"]}; su - #{node["airflow"]["user"]} -c '/usr/local/bin/airflow upgradedb'"
 
 # Admin User details
 default["airflow"]["admin"]["fistname"] = "Airflow"
@@ -16,10 +15,6 @@ default["airflow"]["admin"]["role"] = "Admin"
 default["airflow"]["admin"]["email"] = "airflowadmins@example.com"
 default["airflow"]["admin"]["user"] = "admin"
 default["airflow"]["admin"]["password"] = "password"
-
-# Airflow Commands
-default["airflow"]["bootstrap"]["cmd"] = "cd #{node["airflow"]["user_home_directory"]}; su - #{node["airflow"]["user"]} -c '/usr/local/bin/airflow upgradedb'"
-default["airflow"]["bootstrap"]["create_admin_user_cmd"] = "su - #{node["airflow"]["user"]} -c '/usr/local/bin/airflow create_user -r #{node["airflow"]["admin"]["role"]} -u #{node["airflow"]["admin"]["user"]} -f #{node["airflow"]["admin"]["fistname"]} -l #{node["airflow"]["admin"]["lastname"]} -e #{node["airflow"]["admin"]["email"]} -p #{node["airflow"]["admin"]["password"]}'"
 
 # General config
 default["airflow"]["directories_mode"] = "0775"
@@ -32,7 +27,6 @@ default["airflow"]["init_system"] = node["airflow"]["is_upstart"] ? "upstart" : 
 default["airflow"]["env_path"] = node["platform_family"] == "debian" ? "/etc/default/airflow" : "/etc/sysconfig/airflow"
 
 # Core
-
 default["airflow"]["config"]["core"]["airflow_home"] = "#{node["airflow"]["user_home_directory"]}/airflow"
 default["airflow"]["config"]["core"]["dags_folder"] = "#{node["airflow"]["config"]["core"]["airflow_home"]}/dags"
 default["airflow"]["config"]["core"]["plugins_folder"] = "#{node["airflow"]["config"]["core"]["airflow_home"]}/plugins"
@@ -43,7 +37,7 @@ default["airflow"]["config"]["core"]["dags_are_paused_at_creation"] = "True"
 default["airflow"]["config"]["core"]["parallelism"] = 32
 default["airflow"]["config"]["core"]["dag_concurrency"] = 16
 default["airflow"]["config"]["core"]["max_active_runs_per_dag"] = 16
-default["airflow"]["config"]["core"]["fernet_key"] = "G3jB5--jCQpRYp7hwUtpfQ_S8zLRbRMwX8tr3dehnNU=" 
+default["airflow"]["config"]["core"]["fernet_key"] = "OKLNLK452hhihSTT-jCXX902QpRYp7hwUtpfQ--_S8zLRbRMwX8tr3dehnNU=" 
 
 # Celery
 default["airflow"]["config"]["celery"]["worker_concurrency"] = 16
