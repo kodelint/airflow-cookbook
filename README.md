@@ -41,15 +41,18 @@ verifier:
 
 platforms:
   - name: ubuntu-18.04
-  # - name: centos-7
+  - name: centos-7
 
 suites:
+  ########################################
+  #        Locally using Vagraent        #
+  ########################################
   - name: airflow-cookbook
     provisioner:
       name: chef_zero
       log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
-      product_name: chef
-      product_version: 14.14 # Change it for different `chef-client` or remove it to use the latest
+      product_name: <%= ENV['PRODUCT_NAME'] || "auto" %>
+      product_version: <%= ENV['CHEF_CLIENT_VERSION'] || "auto" %>
     driver:
       network:
         - ["forwarded_port", {guest: 8080, host: 8080}]
