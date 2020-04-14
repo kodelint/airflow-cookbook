@@ -6,6 +6,10 @@ Installs and configures Airflow workflow management platform. More information a
 - Ubuntu (Tested on 18.04).
 - CentOS (Tested on 7)
 
+#### Supported `python`
+- `python3.5`
+- `python3.6`
+
 #### Testing
 - Local testing using `kitchen-ci` and `vagrant`
 - Testing on AWS EC2 `kitchen-ci` look at [kitchen.yml](./kitchen.yml)

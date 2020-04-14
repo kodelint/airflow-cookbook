@@ -7,6 +7,7 @@ Changelog
 
 **New**
 ~~~
+- Added support for python3.5 [Satyajit Roy]
 - Added yum-ius repo for CentOS 7 and Python3.6 [Satyajit Roy]
 ~~~
 
