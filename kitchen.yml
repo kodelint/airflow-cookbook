@@ -13,7 +13,7 @@ suites:
   ########################################
   #        Locally using Vagraent        #
   ########################################
-  - name: airflow-cookbook
+  - name: airflow-cookbook01
     provisioner:
       name: chef_zero
       log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
@@ -32,6 +32,28 @@ suites:
         - test/integration/default
     attributes:
     excludes:
+      - centos-7
+        #- ubuntu-18.04
+  - name: airflow-cookbook02
+    provisioner:
+      name: chef_zero
+      log_level: <%= ENV['CHEF_LOG_LEVEL'] || "auto" %>
+      product_name: <%= ENV['PRODUCT_NAME'] || "chef" %>
+      product_version: <%= ENV['CHEF_CLIENT_VERSION'] || "latest" %>
+    driver:
+      network:
+        - ["forwarded_port", {guest: 8080, host: 8081}]
+    run_list:
+      - recipe[airflow-cookbook::default]
+      - recipe[airflow-cookbook::web]
+      - recipe[airflow-cookbook::scheduler]
+      - recipe[airflow-cookbook::workers]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+    excludes:
+      # - centos-7
       - ubuntu-18.04
 
   ########################################

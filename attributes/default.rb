@@ -1,6 +1,7 @@
 # User configuration
-default['airflow']['airflow_package'] = 'apache-airflow[all]' # use 'airflow' for version <= 1.8.0
+default['airflow']['airflow_package'] = 'apache-airflow[celery,aws,azure,crypto,github_enterprise,hashicorp,kubernetes,ldap,mysql,postgres,password,slack,ssh,rabbitmq]' # use 'airflow' for version <= 1.8.0
 default['airflow']['version'] = '1.10.10'
+default['airflow']['base']['python'] = '3.5'
 default['airflow']['user'] = 'airflow-user'
 default['airflow']['group'] = 'airflow-user'
 default['airflow']['user_uid'] = 9999
@@ -19,7 +20,7 @@ default['airflow']['admin']['password'] = 'password'
 # General config
 default['airflow']['directories_mode'] = 0775
 default['airflow']['config_file_mode'] = 0644
-default['airflow']['bin_path'] = '/usr/local/bin'
+default['airflow']['bin_path'] = platform_family?('debian') ? '/usr/local/bin' : '/usr/bin'
 default['airflow']['run_path'] = '/var/run/airflow'
 default['airflow']['log_path'] = '/var/log/airflow'
 default['airflow']['is_upstart'] = platform?('ubuntu') && node['platform_version'].to_f < 15.04

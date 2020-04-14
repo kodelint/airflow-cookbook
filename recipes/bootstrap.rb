@@ -35,14 +35,39 @@ user node['airflow']['user'] do
 end
 
 ########################################
-#        Install OS dependencies       #
+#         Select OS dependencies       #
 ########################################
 
 platform = node['platform'].to_s
+
+execute 'Add DeadSnake PPA for Python35' do
+  command 'add-apt-repository -y ppa:deadsnakes/ppa; apt-get update'
+  action :run
+  only_if { platform?('ubuntu') }
+end
+
 dependencies_to_install = []
 node['airflow']['dependencies'][platform]['default'].each do |dependency|
   dependencies_to_install << dependency
 end
+
+###############################################################
+#        Select OS dependencies based on python version       #
+###############################################################
+
+if node['airflow']['base']['python'] == '3.5'
+  node['airflow']['dependencies'][platform]['python35'].each do |dependency|
+    dependencies_to_install << dependency
+  end
+else
+  node['airflow']['dependencies'][platform]['python36'].each do |dependency|
+    dependencies_to_install << dependency
+  end
+end
+
+########################################
+#     Install all OS dependencies      #
+########################################
 
 dependencies_to_install.each do |value|
   package_to_install = ''
@@ -64,11 +89,22 @@ end
 #      Install Airflow using pip       #
 ########################################
 
-execute 'install airflow' do
-  command "python3.6 -m pip install #{node['airflow']['airflow_package']}==#{node['airflow']['version']}"
-  action :run
-  not_if "python3.6 -m pip show apache-airflow==#{node['airflow']['version']}"
+case node['airflow']['base']['python']
+when '3.5'
+  execute 'install airflow' do
+    command "python3.5 -m pip install #{node['airflow']['airflow_package']}==#{node['airflow']['version']}"
+    action :run
+    not_if "python3.5 -m pip show apache-airflow==#{node['airflow']['version']}"
+  end
+when '3.6'
+  execute 'install airflow' do
+    command "python3.6 -m pip install #{node['airflow']['airflow_package']}==#{node['airflow']['version']}"
+    action :run
+    not_if "python3.6 -m pip show apache-airflow==#{node['airflow']['version']}"
+  end
 end
+
+
 
 ########################################
 #      Required folder structure       #
@@ -143,14 +179,4 @@ template 'airflow_services_env' do
   )
 end
 
-########################################
-#     Create Tables for Database       #
-########################################
-# Run upgradedb or initdb
-# Answer: Actually any
-# https://medium.com/datareply/airflow-lesser-known-tips-tricks-and-best-practises-cf4d4a90f8f
-
-execute 'run upgradedb' do
-  command "cd #{node['airflow']['user_home_directory']}; su - #{node['airflow']['user']} -c '/usr/local/bin/airflow upgradedb'"
-  action :run
-end
+  
